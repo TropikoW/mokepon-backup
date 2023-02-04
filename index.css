@@ -101,8 +101,12 @@ p,label{
 .attacks{
     display: grid;
     text-align: center;
+    color: var(--colourWhite);
     margin-top: 5rem;
     grid-template-columns: 30rem 30rem;
+}
+.attacks p{
+    margin-top: 1.5rem;
 }
 .attacks-player,.attacks-enemy{
     display: flex;

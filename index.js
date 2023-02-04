@@ -1,36 +1,99 @@
-const inputHipodoge = document.querySelector('#hipodoge');
-const inputCapipepo = document.querySelector('#capipepo');
-const inputRatigueya = document.querySelector('#ratigueya');
-
 const spanPlayerMascot = document.querySelector('#player-mascot');
 const spanEnemyMascot = document.querySelector('#enemy-mascot');
 const spanlifesPlayer = document.querySelector('#lifes-player');
 const spanlifesEnemy = document.querySelector('#lifes-enemy');
 
 const buttonMascotPlayer = document.querySelector('#button-mascot');
-const buttonFire = document.querySelector('#button-fire');
-const buttonWater = document.querySelector('#button-water');
-const buttonEarth = document.querySelector('#button-earth');
 const buttonReload = document.querySelector('#button-reload');
 
+const containerTarjets = document.querySelector('#container-tarjets');
 const sectionMessage = document.querySelector('#result');
 const sectionSelectMascot = document.querySelector('#select-mascot');
 const sectionSelectAttack = document.querySelector('#select-attack');
 const attackOfPlayer = document.querySelector('#attack-of-player');
 const attackOfEnemy = document.querySelector('#attack-of-enemy');
+const containerAttacks = document.querySelector('#container-attacks');
 const sectionReload = document.querySelector('#reload');
 
+let inputHipodoge;
+let inputCapipepo;
+let inputRatigueya;
 
-let attackPlayer;
-let attackEnemy;
 let lifesPlayer = 3;
 let lifesEnemy = 3;
+let attackPlayer;
+let attacksMokepon;
+let mascotPlayer;
+let attackEnemy;
+let optionMokepons;
+let buttonFire;
+let buttonWater;
+let buttonEarth;
+
+// this array save all the characters of game
+let mokepons = [];
+
+// this is the structure for each from mokepons
+class Mokepon {
+    constructor(name,photo,life,) {
+        this.name = name;
+        this.photo = photo;
+        this.life = life;
+        this.attacks = [];
+    }
+};
+
+let hipodoge = new Mokepon('Hipodoge','./assets/mokepons_mokepon_hipodoge_attack.png',5);
+
+let capipepo = new Mokepon('Capipepo','./assets/mokepons_mokepon_capipepo_attack.png',5);
+
+let ratigueya = new Mokepon('Ratigueya','./assets/mokepons_mokepon_ratigueya_attack.png',5);
+
+hipodoge.attacks.push(
+    {name : '💧' , id: 'button-water'},
+    {name : '💧' , id: 'button-water'},
+    {name : '💧' , id: 'button-water'},
+    {name : '🔥' , id: 'button-fire'},
+    {name : '🌱' , id: 'button-earth'},
+);
+capipepo.attacks.push(
+    {name : '🌱' , id: 'button-earth'},
+    {name : '🌱' , id: 'button-earth'},
+    {name : '🌱' , id: 'button-earth'},
+    {name : '💧' , id: 'button-water'},
+    {name : '🔥' , id: 'button-fire'},
+    );
+ratigueya.attacks.push(
+    {name : '🔥' , id: 'button-fire'},
+    {name : '🔥' , id: 'button-fire'},
+    {name : '🔥' , id: 'button-fire'},
+    {name : '💧' , id: 'button-water'},
+    {name : '🌱' , id: 'button-earth'},
+);
+
+mokepons.push(hipodoge,capipepo,ratigueya)
 
 // with this function i can stard the game when the dom full load
 function startGame() {
     // this line code used to hide the button reload
     sectionReload.style.display = 'none';
     /////////////////////////////////////////////
+
+    mokepons.forEach((mokepon)=> {
+        optionMokepons = `
+            <input type="radio" name="mascot" id="${mokepon.name}">
+            <label for="${mokepon.name}" class="tarjet-of-mokepon">
+                <p>${mokepon.name}</p>
+                <img src="${mokepon.photo}" alt="${mokepon.name}">
+            </label>
+        `
+        containerTarjets.innerHTML += optionMokepons;
+
+        inputHipodoge = document.querySelector('#Hipodoge');
+        inputCapipepo = document.querySelector('#Capipepo');
+        inputRatigueya =  document.querySelector('#Ratigueya');
+    });
+
     // this line code to hide the section attack
     sectionSelectAttack.style.display = 'none';
     ////////////////////////////////////////////
@@ -47,17 +110,49 @@ function startGame() {
         ////////////////////////////////////////////
 
         if(inputHipodoge.checked) {
-            spanPlayerMascot.innerText = 'Hipodoge';
+            spanPlayerMascot.innerText = inputHipodoge.id;
+            mascotPlayer = inputHipodoge.id;
         } else if(inputCapipepo.checked) {
-            spanPlayerMascot.innerText = 'Capipepo';
+            spanPlayerMascot.innerText = inputCapipepo.id;
+            mascotPlayer = inputHipodoge.id;
         } else if(inputRatigueya.checked) {
-            spanPlayerMascot.innerText = 'Ratigueya';
+            spanPlayerMascot.innerText = inputRatigueya.id;
+            mascotPlayer = inputHipodoge.id;
         } else {
             alert('you did not select mascot')
         }
+        extractAttacks(mascotPlayer);
         selectMascotEnemy();
     };
     // here finally the function selectMascotPlayer
+
+    function extractAttacks(mascotPlayer) {
+        let attacks;
+        for(let i = 0 ; i < mokepons.length; i++) {
+            if(mascotPlayer === mokepons[i].name) {
+                attacks = mokepons[i].attacks;
+            }
+        };
+        showAttacks(attacks);
+    };
+
+    function showAttacks(attacks) {
+        attacks.forEach((attack)=> {
+            attacksMokepon = `
+            <button id=${attack.id} class="button-of-attack">${attack.name}</button>
+            `
+            containerAttacks.innerHTML += attacksMokepon;
+        });
+
+        buttonFire = document.querySelector('#button-fire');
+        buttonWater = document.querySelector('#button-water');
+        buttonEarth = document.querySelector('#button-earth');
+
+        buttonFire.addEventListener('click',fireAttack);
+        buttonWater.addEventListener('click',waterAttack);
+        buttonEarth.addEventListener('click',earthAttack);
+
+    };
 
     // the function is used for return a number random
     function random(min,max) {
@@ -67,20 +162,12 @@ function startGame() {
 
     // with this function select the enemy with an basic logic of 'else if'
     function selectMascotEnemy() {
-        let randomMascot = random(0,2);
-        if(randomMascot === 0) {
-            spanEnemyMascot.innerText = 'Hipodoge';
-        } else if(randomMascot === 1) {
-            spanEnemyMascot.innerText = 'Capipepo';
-        } else {
-            spanEnemyMascot.innerText = 'Ratigueya';
-        };
+        let randomMascot = random(0,mokepons.length -1);
+        spanEnemyMascot.innerText = mokepons[randomMascot].name;   
     };
     // here finally the function selectMascotEnemy
 
     // this function generate me with an click for to go that the button selected user
-    buttonFire.addEventListener('click',fireAttack);
-
     function fireAttack() {
         attackPlayer = 'Fire';
         randomAttackEnemy();
@@ -88,8 +175,6 @@ function startGame() {
     // here finally the funcion fireAttack
 
     // this function generate me with an click for to go that the button selected user
-    buttonWater.addEventListener('click',waterAttack);
-
     function waterAttack() {
         attackPlayer = 'Water';
         randomAttackEnemy();
@@ -97,8 +182,6 @@ function startGame() {
     // here finally the function waterAttack
 
     // this function generate me with an click for to go that the button selected user
-    buttonEarth.addEventListener('click',earthAttack);
-
     function earthAttack() {
         attackPlayer = 'Earth';
         randomAttackEnemy();
@@ -159,7 +242,6 @@ function startGame() {
     // here finally the function createMessage
 
     function reviewLives() {
-        console.log('ReviewLives');
         if(lifesPlayer === 0) {
             createFinalMessage('Im sorry, you loss the game');
         } else if(lifesEnemy === 0) {
