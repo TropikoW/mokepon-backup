@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="description" content="">
+        <meta name="robots" content="">
+        <meta name="viewport" content="width= device-width, initial-scale= 1.0">
+        <title>Mokepon</title>
+        <link rel="icon" href="">
+        <link rel="preload" href="./index.css" as="style">
+        <link rel="stylesheet" href="./index.css">
+        <link rel="stylesheet" href="./normalize.css">
+        <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap" rel="stylesheet">
+    </head>
+    <body>
+
+        <section id="select-mascot" class="select-mascot">
+
+            <h1 class="title">Mokepon</h1>
+
+            <h2 class="subtitle">Select your mascot</h2>
+
+            <div class="tarjets">
+                <input type="radio" name="mascot" id="hipodoge">
+                <label for="hipodoge" class="tarjet-of-mokepon">
+                    <p>Hipodoge</p>
+                    <img src="./assets/mokepons_mokepon_hipodoge_attack.png" alt="Hipodoge">
+                </label>
+    
+                <input type="radio" name="mascot" id="capipepo">
+                <label for="capipepo" class="tarjet-of-mokepon">
+                    <p>Capipepo</p>
+                    <img src="./assets/mokepons_mokepon_capipepo_attack.png" alt="Capipepo">
+                </label>
+    
+                <input type="radio" name="mascot" id="ratigueya">
+                <label for="ratigueya" class="tarjet-of-mokepon">
+                    <p>Ratigueya</p>
+                    <img src="./assets/mokepons_mokepon_ratigueya_attack.png" alt="Ratigueya">
+                </label>
+            </div>
+
+            <button id="button-mascot" class="button-mascot">Select</button>
+
+        </section>
+        <section id="select-attack" class="select-attack">
+
+            <h1 class="title">Mokepon</h1>
+
+            <h2 class="subtitle">Select your attack</h2>
+
+            <div class="tarjets-attacks">
+                <button id="button-fire" class="button-of-attack">Fire 🔥</button>
+                <button id="button-water" class="button-of-attack">Water 💧</button>
+                <button id="button-earth" class="button-of-attack">Earth 🌱</button>
+            </div>
+
+            <div>
+
+                <div id="message" class="message">
+
+                    <p id="result">Good luck</p>
+
+                    <section id="reload">
+            
+                        <button id="button-reload" class="button-reload">Reload</button>
+            
+                    </section>
+
+                </div>
+        
+
+            </div>
+
+            <div class="attacks">
+
+                <div class="attacks-player">
+                    
+                    <p id="lifes-player">3</p>
+                    <p id="player-mascot"></p>
+                    <div id="attack-of-player"></div>
+
+                </div>
+                <div class="attacks-enemy">
+
+                    <p id="lifes-enemy">3</p>
+                    <p id="enemy-mascot"></p>
+                    <div id="attack-of-enemy"></div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </body>
+    <script src="./index.js" ></script>
+</html>
