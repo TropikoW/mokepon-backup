@@ -18,17 +18,28 @@ const sectionReload = document.querySelector('#reload');
 let inputHipodoge;
 let inputCapipepo;
 let inputRatigueya;
-
+let playerWins = 0;
+let enemyWins = 0;
 let lifesPlayer = 3;
 let lifesEnemy = 3;
-let attackPlayer;
 let attacksMokepon;
+let attacksMokeponEnemy;
+let firstAttackPlayer;
+let firstAttackEnemy;
 let mascotPlayer;
-let attackEnemy;
 let optionMokepons;
 let buttonFire;
 let buttonWater;
 let buttonEarth;
+
+// this array save all the attacks from enemy in the actually game
+let attackEnemy = [];
+
+// this array save all the attacks from player in the actually game
+let attackPlayer = [];
+
+// this array save all interactions from power of characters
+let buttons = [];
 
 // this array save all the characters of game
 let mokepons = [];
@@ -139,7 +150,7 @@ function startGame() {
     function showAttacks(attacks) {
         attacks.forEach((attack)=> {
             attacksMokepon = `
-            <button id=${attack.id} class="button-of-attack">${attack.name}</button>
+            <button id=${attack.id} class="button-of-attack b-attack">${attack.name}</button>
             `
             containerAttacks.innerHTML += attacksMokepon;
         });
@@ -147,83 +158,107 @@ function startGame() {
         buttonFire = document.querySelector('#button-fire');
         buttonWater = document.querySelector('#button-water');
         buttonEarth = document.querySelector('#button-earth');
+        buttons = document.querySelectorAll('.b-attack')
 
-        buttonFire.addEventListener('click',fireAttack);
-        buttonWater.addEventListener('click',waterAttack);
-        buttonEarth.addEventListener('click',earthAttack);
+    };
 
+    function attackSequence() {
+        buttons.forEach((button)=> {
+            button.addEventListener('click',(e)=>{
+                if(e.target.textContent === '💧') {
+                    attackPlayer.push('Water');
+                    console.log(attackPlayer);
+                    button.style.background = '#112f58';
+                    button.disabled = true;
+                } else if(e.target.textContent === '🔥') {
+                    attackPlayer.push('Fire');
+                    console.log(attackPlayer);
+                    button.style.background = '#112f58';
+                    button.disabled = true;
+                } else {
+                    attackPlayer.push('Earth');
+                    console.log(attackPlayer);
+                    button.style.background = '#112f58';
+                    button.disabled = true;
+                };
+                randomAttackEnemy();
+            });
+        });
     };
 
     // the function is used for return a number random
     function random(min,max) {
         return Math.floor(Math.random() * (max-min +1) + min);
-    }
+    };
     // here finally the function random
 
     // with this function select the enemy with an basic logic of 'else if'
     function selectMascotEnemy() {
         let randomMascot = random(0,mokepons.length -1);
-        spanEnemyMascot.innerText = mokepons[randomMascot].name;   
+        spanEnemyMascot.innerText = mokepons[randomMascot].name;
+        attacksMokeponEnemy = mokepons[randomMascot].attacks;
+        attackSequence();
     };
     // here finally the function selectMascotEnemy
 
-    // this function generate me with an click for to go that the button selected user
-    function fireAttack() {
-        attackPlayer = 'Fire';
-        randomAttackEnemy();
-    };
-    // here finally the funcion fireAttack
-
-    // this function generate me with an click for to go that the button selected user
-    function waterAttack() {
-        attackPlayer = 'Water';
-        randomAttackEnemy();
-    };
-    // here finally the function waterAttack
-
-    // this function generate me with an click for to go that the button selected user
-    function earthAttack() {
-        attackPlayer = 'Earth';
-        randomAttackEnemy();
-    };
-    // here finally the function earthAttack
-
     // this function return me the attack random from enemy
     function randomAttackEnemy() {
-        let attackRandom = random(0,2);
-        if(attackRandom ===  0) {
-            attackEnemy = 'Fire';
-        } else if(attackRandom == 1) {
-            attackEnemy = 'Water';
+        let attackRandom = random(0,attacksMokeponEnemy.length -1);
+        if(attackRandom ==  0  || attackRandom == 1) {
+            attackEnemy.push('Fire');
+        } else if(attackRandom == 3 || attackRandom == 4) {
+            attackEnemy.push('Water');
         } else {
-            attackEnemy = 'Earth'
+            attackEnemy.push('Earth');
         }
-        combat();
+        console.log(attackRandom);
+        console.log(attackEnemy);
+        startFight()
     };
     // here finally the function randomAttackEnemy
+
+    // with this function i can validate the length of combat from player
+    function startFight() {
+        if(attackPlayer.length === 5) {
+            combat();
+        };
+    };
     
+    function firstBothOpponents(player,enemy) {
+        firstAttackPlayer = attackPlayer[player];
+        firstAttackEnemy = attackEnemy[enemy];
+    };
+
     // with this function the attack begins
     function combat() {
-        if(attackPlayer  == attackEnemy) {
-            createMessage('No winner 😣')
-        } else if(attackPlayer == 'Fire' && attackEnemy == 'Earth') {
-            createMessage('You win🦾')
-            lifesEnemy -= 1;
-            spanlifesEnemy.innerText = lifesEnemy;
-        } else if(attackPlayer == 'Water' && attackEnemy == 'Fire') {
-            createMessage('You win🦾')
-            lifesEnemy -= 1;
-            spanlifesEnemy.innerText = lifesEnemy;
-        } else if(attackPlayer == 'Earth' && attackEnemy == 'Water') {
-            createMessage('You win🦾')
-            lifesEnemy -= 1;
-            spanlifesEnemy.innerText = lifesEnemy;
-        } else {
-            createMessage('You loss😥')
-            lifesPlayer -= 1;
-            spanlifesPlayer.innerText = lifesPlayer;
+
+        for(let i = 0 ; i < attackPlayer.length; i++) {
+            if(attackPlayer[i] === attackEnemy[i]) {
+                firstBothOpponents(i,i);
+                createMessage('No winner 😣');
+            } else if(attackPlayer[i] === 'Fire' && attackEnemy[i] === 'Earth') {
+                firstBothOpponents(i,i);
+                createMessage('You win🦾');
+                playerWins ++;
+                spanlifesPlayer.innerText = playerWins;
+            } else if(attackPlayer[i] === 'Water' && attackEnemy[i] === 'Fire') {
+                firstBothOpponents(i,i);
+                createMessage('You win🦾');
+                playerWins ++;
+                spanlifesPlayer.innerText = playerWins;
+            } else if(attackPlayer[i] === 'Earth' && attackEnemy[i] === 'Water') {
+                firstBothOpponents(i,i);
+                createMessage('You win🦾');
+                playerWins ++;
+                spanlifesPlayer.innerText = playerWins;
+            } else {
+                firstBothOpponents(i,i);
+                createMessage('You loss😥');
+                enemyWins ++;
+                spanlifesEnemy.innerText = enemyWins;
+            };
+            reviewVictory();
         };
-        reviewLives();
     };
     // here finally the function combat
 
@@ -233,20 +268,22 @@ function startGame() {
         let newAttackEnemy = document.createElement('p');
 
         sectionMessage.innerText = result;
-        newAttackPlayer.innerText = attackPlayer;
-        newAttackEnemy.innerText = attackEnemy;
+        newAttackPlayer.innerText = firstAttackPlayer;
+        newAttackEnemy.innerText = firstAttackEnemy;
 
         attackOfPlayer.appendChild(newAttackPlayer);
         attackOfEnemy.appendChild(newAttackEnemy);
     };  
     // here finally the function createMessage
 
-    function reviewLives() {
-        if(lifesPlayer === 0) {
-            createFinalMessage('Im sorry, you loss the game');
-        } else if(lifesEnemy === 0) {
+    function reviewVictory() {
+        if(playerWins === enemyWins) {
+            createFinalMessage('This game ended without an winner!');
+        } else if(playerWins > enemyWins) {
             createFinalMessage('Congratulations, You win the game');
-        };
+        } else {
+            createFinalMessage('Oh no!, you loss the game!');
+        }
     };
 
     function createFinalMessage(finalResult) {
@@ -254,10 +291,6 @@ function startGame() {
         sectionMessage.appendChild(sectionFinalMessage)
         sectionMessage.innerText = finalResult;
         sectionReload.style.display = 'block';
-        
-        buttonFire.disabled = true;
-        buttonEarth.disabled = true;
-        buttonWater.disabled = true; 
     };
 
     // this button used for reload the game when the function combat return the player win
