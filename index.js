@@ -38,6 +38,8 @@ let buttonFire;
 let buttonWater;
 let buttonEarth;
 
+let canvas = map.getContext('2d');
+
 // this array save all the attacks from enemy in the actually game
 let attackEnemy = [];
 
@@ -58,7 +60,13 @@ class Mokepon {
         this.life = life;
         this.type = type;
         this.attacks = [];
-    }
+        this.x = 20;
+        this.y = 30; /*value vertical */
+        this.width = 80; /*horizontal value */
+        this.heigth = 80;
+        this.mapPhoto = new Image();
+        this.mapPhoto.src = photo;
+    };
 };
 
 let hipodoge = new Mokepon('Hipodoge','./assets/mokepons_mokepon_hipodoge_attack.png',5);
@@ -364,6 +372,23 @@ function startGame() {
     // here finally the function reloadGame
     
 };
+
+function paintCharacter() {
+    canvas.clearRect(0,0,304, 154);
+    canvas.drawImage( /*drawImage is a function for extract to image */
+    capipepo.mapPhoto,  /* this var save the image from the characters */
+    capipepo.x, /*<--position x*/
+    capipepo.y, /*<--position y */
+    capipepo.width, /*<--value with */
+    capipepo.heigth/*<--value higth */
+);
+};
+
+function moveCapipepo() {
+    capipepo.x = capipepo.x +5; /*with this line code i can move to capipepo in direction to the 'x' and add buttons movements */
+    paintCharacter()
+};
+
 // here finally the function startGame
 
 window.addEventListener('load',startGame)
