@@ -10,6 +10,8 @@ const containerTarjets = document.querySelector('#container-tarjets');
 const sectionMessage = document.querySelector('#result');
 const sectionSelectMascot = document.querySelector('#select-mascot');
 const sectionSelectAttack = document.querySelector('#select-attack');
+const sectionSeeMap = document.querySelector('#see-map');
+const map = document.querySelector('#map');
 const attackOfPlayer = document.querySelector('#attack-of-player');
 const attackOfEnemy = document.querySelector('#attack-of-enemy');
 const containerAttacks = document.querySelector('#container-attacks');
@@ -18,6 +20,10 @@ const sectionReload = document.querySelector('#reload');
 let inputHipodoge;
 let inputCapipepo;
 let inputRatigueya;
+let inputLangostelvis;
+let inputPydos;
+let inputTucapalma;
+
 let playerWins = 0;
 let enemyWins = 0;
 let lifesPlayer = 3;
@@ -46,10 +52,11 @@ let mokepons = [];
 
 // this is the structure for each from mokepons
 class Mokepon {
-    constructor(name,photo,life,) {
+    constructor(name,photo,type,life) {
         this.name = name;
         this.photo = photo;
         this.life = life;
+        this.type = type;
         this.attacks = [];
     }
 };
@@ -59,6 +66,12 @@ let hipodoge = new Mokepon('Hipodoge','./assets/mokepons_mokepon_hipodoge_attack
 let capipepo = new Mokepon('Capipepo','./assets/mokepons_mokepon_capipepo_attack.png',5);
 
 let ratigueya = new Mokepon('Ratigueya','./assets/mokepons_mokepon_ratigueya_attack.png',5);
+
+let langostelvis = new Mokepon('Langostelvis','./assets/mokepons_mokepon_langostelvis_attack.png','Fire',5);
+
+let pydos = new Mokepon('Pydos','./assets/mokepons_mokepon_pydos_attack.png','Water',5);
+
+let tucapalma = new Mokepon('Tucapalma','./assets/mokepons_mokepon_tucapalma_attack.png','Earth',5)
 
 hipodoge.attacks.push(
     {name : '💧' , id: 'button-water'},
@@ -81,14 +94,42 @@ ratigueya.attacks.push(
     {name : '💧' , id: 'button-water'},
     {name : '🌱' , id: 'button-earth'},
 );
+langostelvis.attacks.push(
+    {name : '🔥' , id: 'button-fire'},
+    {name : '🔥' , id: 'button-fire'},
+    {name : '🔥' , id: 'button-fire'},
+    {name : '🔥' , id: 'button-fire'},
+    {name : '🌱' , id: 'button-earth'},
+    {name : '💧' , id: 'button-water'},
+);
+pydos.attacks.push(
+    {name : '💧' , id: 'button-water'},
+    {name : '💧' , id: 'button-water'},
+    {name : '💧' , id: 'button-water'},
+    {name : '💧' , id: 'button-water'},
+    {name : '🌱' , id: 'button-earth'},
+    {name : '🔥' , id: 'button-fire'},
+);
+tucapalma.attacks.push(
+    {name : '🌱' , id: 'button-earth'},
+    {name : '🌱' , id: 'button-earth'},
+    {name : '🌱' , id: 'button-earth'},
+    {name : '🌱' , id: 'button-earth'},
+    {name : '💧' , id: 'button-water'},
+    {name : '🔥' , id: 'button-fire'},
+);
 
-mokepons.push(hipodoge,capipepo,ratigueya)
+mokepons.push(hipodoge,capipepo,ratigueya,langostelvis,pydos,tucapalma)
 
 // with this function i can stard the game when the dom full load
 function startGame() {
     // this line code used to hide the button reload
     sectionReload.style.display = 'none';
     /////////////////////////////////////////////
+
+    // this line code used to hide the section of canvas
+    sectionSeeMap.style.display = 'none';
+    ////////////////////////////////////////////
 
     mokepons.forEach((mokepon)=> {
         optionMokepons = `
@@ -103,6 +144,10 @@ function startGame() {
         inputHipodoge = document.querySelector('#Hipodoge');
         inputCapipepo = document.querySelector('#Capipepo');
         inputRatigueya =  document.querySelector('#Ratigueya');
+        inputLangostelvis = document.querySelector('#Langostelvis')
+        inputPydos = document.querySelector('#Pydos');
+        inputTucapalma = document.querySelector('#Tucapalma');
+
     });
 
     // this line code to hide the section attack
@@ -113,22 +158,34 @@ function startGame() {
 
     // with this function i can validate if some input is select
     function selectMascotPlayer() {
-        // this line code to show the section attack
-        sectionSelectAttack.style.display = 'flex';
-        ////////////////////////////////////////////
         // this line code to hide the section select mascot
         sectionSelectMascot.style.display = 'none';
         ////////////////////////////////////////////
 
+        // this line code to show the section attack
+        //sectionSelectAttack.style.display = 'flex';
+        ////////////////////////////////////////////
+
+        sectionSeeMap.style.display = 'flex';
+        
         if(inputHipodoge.checked) {
             spanPlayerMascot.innerText = inputHipodoge.id;
             mascotPlayer = inputHipodoge.id;
         } else if(inputCapipepo.checked) {
             spanPlayerMascot.innerText = inputCapipepo.id;
-            mascotPlayer = inputHipodoge.id;
+            mascotPlayer = inputCapipepo.id;
         } else if(inputRatigueya.checked) {
             spanPlayerMascot.innerText = inputRatigueya.id;
-            mascotPlayer = inputHipodoge.id;
+            mascotPlayer = inputRatigueya.id;
+        } else if(inputLangostelvis.checked){
+            spanPlayerMascot.innerText = inputLangostelvis.id;
+            mascotPlayer = inputLangostelvis.id;
+        } else if(inputPydos.checked) {
+            spanPlayerMascot.innerText = inputPydos.id
+            mascotPlayer = inputPydos.id;
+        } else if (inputTucapalma.checked) {
+            spanPlayerMascot.innerText = inputTucapalma.id;
+            mascotPlayer = inputTucapalma.id;
         } else {
             alert('you did not select mascot')
         }
@@ -166,17 +223,17 @@ function startGame() {
         buttons.forEach((button)=> {
             button.addEventListener('click',(e)=>{
                 if(e.target.textContent === '💧') {
-                    attackPlayer.push('Water');
+                    attackPlayer.push(e.target.textContent);
                     console.log(attackPlayer);
                     button.style.background = '#112f58';
                     button.disabled = true;
                 } else if(e.target.textContent === '🔥') {
-                    attackPlayer.push('Fire');
+                    attackPlayer.push(e.target.textContent);
                     console.log(attackPlayer);
                     button.style.background = '#112f58';
                     button.disabled = true;
                 } else {
-                    attackPlayer.push('Earth');
+                    attackPlayer.push(e.target.textContent);
                     console.log(attackPlayer);
                     button.style.background = '#112f58';
                     button.disabled = true;
@@ -204,12 +261,12 @@ function startGame() {
     // this function return me the attack random from enemy
     function randomAttackEnemy() {
         let attackRandom = random(0,attacksMokeponEnemy.length -1);
-        if(attackRandom ==  0  || attackRandom == 1) {
-            attackEnemy.push('Fire');
-        } else if(attackRandom == 3 || attackRandom == 4) {
-            attackEnemy.push('Water');
+        if(attackRandom ==  0  || attackRandom == 2) {
+            attackEnemy.push(attacksMokeponEnemy[0].name);
+        } else if(attackRandom == 3) {
+            attackEnemy.push(attacksMokeponEnemy[3].name);
         } else {
-            attackEnemy.push('Earth');
+            attackEnemy.push(attacksMokeponEnemy[4].name);
         }
         console.log(attackRandom);
         console.log(attackEnemy);
@@ -236,22 +293,27 @@ function startGame() {
             if(attackPlayer[i] === attackEnemy[i]) {
                 firstBothOpponents(i,i);
                 createMessage('No winner 😣');
-            } else if(attackPlayer[i] === 'Fire' && attackEnemy[i] === 'Earth') {
+            } else if(attackPlayer[i] === '🔥' && attackEnemy[i] === '💧') {
                 firstBothOpponents(i,i);
                 createMessage('You win🦾');
                 playerWins ++;
                 spanlifesPlayer.innerText = playerWins;
-            } else if(attackPlayer[i] === 'Water' && attackEnemy[i] === 'Fire') {
+            } else if(attackPlayer[i] === '💧' && attackEnemy[i] === '🔥') {
                 firstBothOpponents(i,i);
                 createMessage('You win🦾');
                 playerWins ++;
                 spanlifesPlayer.innerText = playerWins;
-            } else if(attackPlayer[i] === 'Earth' && attackEnemy[i] === 'Water') {
+            } else if(attackPlayer[i] === '🌱' && attackEnemy[i] === '💧') {
                 firstBothOpponents(i,i);
                 createMessage('You win🦾');
                 playerWins ++;
                 spanlifesPlayer.innerText = playerWins;
-            } else {
+            } else if(attackPlayer[i] === '🔥' && attackEnemy[i] === '🌱'){
+                firstBothOpponents(i,i);
+                createMessage('You win🦾');
+                playerWins ++;
+                spanlifesPlayer.innerText = playerWins;
+            }else {
                 firstBothOpponents(i,i);
                 createMessage('You loss😥');
                 enemyWins ++;
